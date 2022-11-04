@@ -1,0 +1,1 @@
+A collection of common data structures built with JavaScript for future reference.
