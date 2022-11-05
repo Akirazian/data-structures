@@ -1,37 +1,40 @@
 class LinkedList {
-    #counter = 0;
     #head = null;
-    #tail = null;
 
   append(value) { //Adds new node containing value to end of list
     let newNode = new Node(value);
-    this.#counter++;
     if (this.#head === null) {
       this.#head = newNode;
-      this.#tail = newNode;
-      return;
+      return this.toString();;
     }
     let pointer = this.#head;
     while (pointer.nextNode != null) {
       pointer = pointer.nextNode;
     }
     pointer.nextNode = newNode;
-    this.#tail = newNode;
+    return this.toString();
   }
 
   prepend(value) { //Adds new node containing value to front of list
-    if (this.#counter === 0) {
+    if (this.#head === null) {
       this.append(value);
       return;
     }
     let newNode = new Node(value);
-    this.#counter++;
     newNode.nextNode = this.#head;
     this.#head = newNode;
+    return this.toString();
   }
 
   size() { //Returns total number of nodes in list
-    return this.#counter;
+    let counter = 1;
+    if (this.#head === null) return 0;
+    let pointer = this.#head;
+    while (pointer.nextNode != null) {
+      counter++;
+      pointer = pointer.nextNode;
+    }
+    return counter;
   }
 
   head() { //Returns first node
@@ -39,11 +42,15 @@ class LinkedList {
   }
 
   tail() { //Returns last node
-    return this.#tail;
+    let tail = this.#head;
+    while (tail.nextNode != null) {
+      tail = tail.nextNode;
+    }
+    return tail;
   }
 
   at(index) { //Returns node at given index
-    if (index > this.#counter) return undefined;
+    if (index > this.size()) return undefined;
     let count = 0;
     let pointer = this.#head;
     while (count != index) {
@@ -54,20 +61,17 @@ class LinkedList {
   }
 
   pop() { //Removes last node
-    if (this.#counter === 0) return;
-    if (this.#counter === 1) {
-      this.#head = null
-      this.#tail = null
-      this.#counter--;
+    if (this.#head === null) return;
+    if (this.size() === 1) {
+      this.#head = null;
       return;
-    };
+    }
     let pointer = this.#head;
-    while (pointer.nextNode != this.#tail) {
+    while (pointer.nextNode.nextNode != null) {
       pointer = pointer.nextNode;
     }
     pointer.nextNode = null;
-    this.#tail = pointer;
-    this.#counter--;
+    return this.toString();
   }
 
   contains(value) { //Returns true/false if value is in list
@@ -76,8 +80,7 @@ class LinkedList {
     while (pointer != null && pointer.value != value ) {
       pointer = pointer.nextNode;
     }
-    if (pointer === null) return false;
-    return true;
+    return (pointer === null ? false : true);
   }
 
   find(value) { //Returns index of node containing value
@@ -93,7 +96,7 @@ class LinkedList {
   }
 
   toString() { //Returns string representation of list
-    if (this.#counter === 0) return null;
+    if (this.#head === 0) return null;
     let string = `( ${this.#head.value} ) -> `;
     let pointer = this.#head;
     while(pointer.nextNode != null) {
@@ -106,7 +109,7 @@ class LinkedList {
   //Bonus methods
 
   insertAt(value, index) {
-    if (index > this.#counter) return;
+    if (index > this.size()) return;
     let newNode = new Node(value);
     let pointer = this.#head;
     let count = 0;
@@ -120,21 +123,19 @@ class LinkedList {
     }
     newNode.nextNode = pointer.nextNode;
     pointer.nextNode = newNode;
-    this.#counter++;
     return this.toString();
   }
 
   removeAt(index) {
-    if (index > this.#counter || this.#counter === 0) return;
+    if (index > this.size() || this.#head === null) return;
     let pointer = this.#head;
     let count = 0;
-    if (index === this.#counter - 1) {
+    if (index === this.size() - 1) {
       this.pop();
       return this.toString();
     }
     if (index === 0) {
       this.#head = this.#head.nextNode;
-      this.#counter--;
       return this.toString();
     }
     while (count < index - 1) {
