@@ -11,13 +11,11 @@ function mergeSort(array) {
   //Merge into a new array
   ((l, r) => {
   	let i = 0, j=0;
-  
 		while (i < l.length && j < r.length) {
 			l[i] < r[j] ? sortedArray.push(l[i++]) : sortedArray.push(r[j++]);
 		}
     while(i < l.length) sortedArray.push(l[i++]);
     while(j < r.length) sortedArray.push(r[j++]);
-
 	})(leftSide, rightSide);
   
   return sortedArray;
