@@ -32,7 +32,6 @@ class Tree {
       root.left = this.delete(value, root.left);
       return root;
     }
-    //Deletion begins when value is neither > or < than root (implicitly, value === root)
     // 0 or 1 Child cases
     if (root.left === null) return root.right;
     if (root.right === null) return root.left;
@@ -55,11 +54,35 @@ class Tree {
     let queue = [];
     queue.push(root);
     while (queue.length != 0) {
-      f(queue[0].value);
+      f(queue[0]);
       if (queue[0].left != null) queue.push(queue[0].left);
       if (queue[0].right != null) queue.push(queue[0].right);
       queue.shift();
     }
+  }
+
+  inorder(f, root = this.root) {
+    if (root === null) return;
+    this.inorder(f, root.left);
+    f(root);
+    this.inorder(f, root.right);
+    return;
+  }
+
+  preorder(f, root = this.root) {
+    if (root === null) return;
+    f(root);
+    this.preorder(f, root.left);
+    this.preorder(f, root.right);
+    return;
+  }
+
+  postorder(f, root = this.root) {
+    if (root === null) return;
+    this.postorder(f, root.left);
+    this.postorder(f, root.right);
+    f(root);
+    return;
   }
 
   prettyPrint(node = this.root, prefix = '', isLeft = true) {
@@ -96,4 +119,5 @@ class Node {
 let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 let array2 = [1, 11, 13, 15, 20, 24, 27, 29, 37, 38, 44, 50, 56, 69, 82, 84, 85, 86, 93, 94, 97];
 let tree = new Tree(array);
+let testFunc = (node) => console.log(node.value);
 tree.prettyPrint();
