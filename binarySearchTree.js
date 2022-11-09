@@ -1,6 +1,6 @@
 class Tree {
   constructor(array) {
-    this.sortedArray = [...this.#filter(array)].sort((a, b) => {return a-b});
+    this.sortedArray = [...new Set(array)].sort((a, b) => {return a-b});
     this.root = this.#buildTree(this.sortedArray, 0, this.sortedArray.length - 1);
   }
 
@@ -52,13 +52,16 @@ class Tree {
   levelOrder(f, root = this.root) { //Apply the given function on each node in level order
     if (root === null) return;
     let queue = [];
+    let array = [];
     queue.push(root);
     while (queue.length != 0) {
-      f(queue[0]);
+      if (f) f(queue[0]);
+      array.push(queue[0].value);
       if (queue[0].left != null) queue.push(queue[0].left);
       if (queue[0].right != null) queue.push(queue[0].right);
       queue.shift();
     }
+    if (!f) return array;
   }
 
   inorder(f, root = this.root) {
@@ -137,8 +140,6 @@ class Tree {
     }
   }
 
-  #filter(array) { return new Set(array) };
-
   #minValue(root) { //helper method to find smallest node;
     let min = root.value;
     while (root.left != null) {
@@ -156,3 +157,8 @@ class Node {
     this.right = null;
   }
 }
+
+let array = [45, 325, 3, 2, 512, 34, 2, 535, 6, 3, 36]
+let tree = new Tree(array);
+tree.prettyPrint();
+tree.levelOrder();
