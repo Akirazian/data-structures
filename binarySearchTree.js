@@ -85,6 +85,48 @@ class Tree {
     return;
   }
 
+  height(node) { //Find height of given node
+    let counter = 1;
+    if (node === null) return 0;
+    let leftHeight = this.height(node.left);
+    let rightHeight = this.height(node.right);
+    if (leftHeight > rightHeight) {
+      counter += leftHeight;
+      return counter;
+    } else {
+      counter += rightHeight;
+      return counter;
+    }
+  }
+  
+  depth(node) { //Find depth of given node from tree's root
+    let counter = 0;
+    let currentNode = this.root;
+    while (node != currentNode) {
+      if (node.value > currentNode.value) {
+        currentNode = currentNode.right;
+      } else {
+        currentNode = currentNode.left;
+      }
+      counter++;
+    }
+    return counter;
+  }
+
+  isBalanced() { //Return boolean of if tree is balanced
+    if (this.height(this.root.left) - this.height(this.root.right) <= 1 && this.height(this.root.right) - this.height(this.root.left) <= 1) {
+      return true;
+    }
+    return false;
+  }
+
+  rebalance() {
+    let array = [];
+    this.inorder((node) => array.push(node.value));
+    this.root = this.#buildTree(array, 0, array.length - 1);
+    this.prettyPrint();
+  }
+
   prettyPrint(node = this.root, prefix = '', isLeft = true) {
     if (node.right !== null) {
       this.prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
@@ -114,10 +156,3 @@ class Node {
     this.right = null;
   }
 }
-
-//testers
-let array = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-let array2 = [1, 11, 13, 15, 20, 24, 27, 29, 37, 38, 44, 50, 56, 69, 82, 84, 85, 86, 93, 94, 97];
-let tree = new Tree(array);
-let testFunc = (node) => console.log(node.value);
-tree.prettyPrint();
