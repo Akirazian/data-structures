@@ -1,18 +1,8 @@
-//Given a start
-//range of moves is [1,1] to [8,8]
-//Breadth First  finds shortest paths from a given source vertex to all other vertices, 
-// in terms of the number of edges in the paths.
+//Given a starting and ending position on a chessboard, find the shortest path a knight piece can travel between the two positions.
+//Board is represented by array of 64 positions: [1,1] to [8,8]
 
 // Distance (d) = minimum number of moves in any path from the source to given move/square
 // Predecessor (p) = predecessor of current square along shortest path from source (source p = null)
-
-//dequeue the current node DONE
-//find its neighbors (moves a knight could make from that position)
-//for each neighbor not visited yet
-  // distance = current node's distance + 1;
-  // predecessor = current node
-  // enqueue neighbor
-
 
 function knightMoves(start, end) {
   class Node {
@@ -41,25 +31,34 @@ function knightMoves(start, end) {
     }
   }
 
-  let board = [];
+  let board = []; //Chessboard represented by 64 nodes
   for (let i = 1; i <= 8; i++) {
     for (let u = 1; u <= 8; u++) {
       board.push(new Node(i, u));
     }
   }
-  //helper function below take [x, y] board position and returns index of node
+  //helper function below takes [x, y] board position and returns index of node
   board.findNode = (position) => board.findIndex((node) => arraysEqual(node.position, position));
 
-  function search() {
+  function search() { //Main search function using breadth-first search
     let queue = new Queue();
     let startIndex = board.findNode(start);
     let endIndex = board.findNode(end);
+    if (startIndex === endIndex) return "You have the same start and end! No need to move, you're already here."
     board[startIndex].distance = 0;
     queue.enqueue(startIndex);
 
     while (!queue.isEmpty()) {
       let current = queue.dequeue();
       let moves = findMoves(current);
+      for (let i = 0; i < moves.length; i++) {
+        if (board[moves[i]].distance === null) {
+          board[moves[i]].distance = board[current].distance + 1;
+          board[moves[i]].predecessor = current;
+          queue.enqueue(moves[i]);
+        }
+        if (moves[i] === endIndex) return shortPathOutput(endIndex);
+      }
     }
   }
 
@@ -81,6 +80,20 @@ function knightMoves(start, end) {
     return moves;
   }
 
+  function shortPathOutput(index) { //Returns shortest path in neat console statement
+    let path = [board[index].position];
+    let predecessor = board[index].predecessor;
+    while (predecessor) {
+      path.unshift(board[predecessor].position);
+      predecessor = board[predecessor].predecessor;
+    }
+    let pathPrint = ``;
+    for (let i = 0; i < path.length; i++) {
+      pathPrint += `\n[${path[i]}]`
+    }
+    return console.log(`You made it in ${board[index].distance} moves! Here's your path: ${pathPrint}`);
+  }
+
   function arraysEqual(a, b) { //helper function to find if arrays are equal
     if (a === b) return true;
     if (a == null || b == null) return false;
@@ -93,5 +106,3 @@ function knightMoves(start, end) {
 
   return search();
 }
-
-console.log(knightMoves([1, 2]));
